@@ -39,4 +39,7 @@ ENV/
 
 # Operating System
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Git Installer
+Git-2.49.0-64-bit.exe 
