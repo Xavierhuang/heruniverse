@@ -1,0 +1,3 @@
+name,location,story_text,industry,ethnicity,organization,is_leader,help_needed,longitude,latitude,photo_url
+Jane Doe,"New York, USA","A passionate tech entrepreneur...",Technology,Asian,TechCorp,TRUE,"Looking for mentorship",-74.006,40.7128,default.jpg
+Maria Garcia,"Madrid, Spain","Leading innovation in healthcare...",Healthcare,Hispanic,HealthTech,TRUE,"Seeking investors",-3.7038,40.4168,default.jpg 

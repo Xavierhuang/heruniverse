@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Support & Mental Health Resources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #ff6b6b;
+            --accent-color: #4ecdc4;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+            --hover-color: #f8f9fa;
+            --gradient-start: #6c63ff;
+            --gradient-end: #ff6b6b;
+            --emergency-color: #ff4757;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .language-selector select {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .language-selector select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+        }
+
+        .return-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .return-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .return-button::before {
+            content: '←';
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .return-button:hover::before {
+            transform: translateX(-5px);
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--emergency-color));
+        }
+
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            perspective: 1000px;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(108, 99, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card.emergency {
+            border: 2px solid var(--emergency-color);
+        }
+
+        .card.emergency h3 {
+            color: var(--emergency-color);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(255, 107, 107, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card.emergency:hover {
+            border-color: var(--emergency-color);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .card .contact-info {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: var(--hover-color);
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .card a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .card a:hover {
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .card a:hover::after {
+            width: 100%;
+        }
+
+        [lang="ar"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.75rem;
+            }
+
+            .card h3 {
+                font-size: 1.1rem;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+
+            .card a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .card {
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: calc(var(--animation-order) * 0.1s);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="return-button">
+        <span>Return to Pyramid</span>
+    </a>
+
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <div id="content">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const content = {
+            en: {
+                section1: {
+                    title: "Global Crisis Support & Mental Health Resources",
+                    items: [
+                        {
+                            name: "Find A Helpline",
+                            description: "A global directory of over 1,600 free, confidential support resources available via phone, text, or webchat across more than 100 countries.",
+                            link: "https://findahelpline.com"
+                        },
+                        {
+                            name: "NO MORE Global Directory",
+                            description: "Comprehensive international directory of domestic and sexual violence helplines, specialist support services, and resources for all genders in nearly every UN-recognized country.",
+                            link: "https://nomoredirectory.org"
+                        },
+                        {
+                            name: "International Association for Suicide Prevention (IASP)",
+                            description: "Provides a directory of crisis centers and helplines worldwide, aiming to prevent suicide and support those affected.",
+                            link: "https://www.iasp.info/crisis-centres-helplines/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "United States Crisis Support & Domestic Violence Resources",
+                    items: [
+                        {
+                            name: "988 Suicide & Crisis Lifeline",
+                            description: "24/7 national network providing free and confidential emotional support to people in suicidal crisis or emotional distress.",
+                            contact: "Call or Text: 988",
+                            link: "https://988lifeline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "Crisis Text Line",
+                            description: "Provides free, 24/7 text-based mental health support and crisis intervention.",
+                            contact: "Text: HOME to 741741",
+                            link: "https://www.crisistextline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "The National Domestic Violence Hotline",
+                            description: "24/7 support for victims of domestic violence, offering safety planning, crisis intervention, and local resources.",
+                            contact: "Call: 1-800-799-7233",
+                            link: "https://www.thehotline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "WomensLaw.org",
+                            description: "Provides plain-language legal information for victims of domestic violence, including state-specific laws and resources.",
+                            link: "https://www.womenslaw.org"
+                        },
+                        {
+                            name: "Sanctuary for Families",
+                            description: "New York-based organization offering comprehensive services to survivors of domestic violence, sex trafficking, and related forms of gender violence.",
+                            link: "https://sanctuaryforfamilies.org"
+                        }
+                    ]
+                },
+                section3: {
+                    title: "China Crisis Support & Domestic Violence Resources",
+                    items: [
+                        {
+                            name: "Equality Beijing Hotline",
+                            description: "Provides support services for victims of domestic violence.",
+                            contact: "Call: 1511 7905 157",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "Red Maple Hotline",
+                            description: "Offers support for women's rights and domestic violence issues.",
+                            contact: "Call: 010 6833 3388",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "Hunan Women's Federation Hotline",
+                            description: "Provides women's rights protection and domestic violence support services.",
+                            contact: "Call: 0898 12338 or 0898 12345",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "Domestic Violence Helpline App",
+                            description: "Newly launched domestic violence help application that received thousands of calls for help within days of launch.",
+                            link: "https://www.reuters.com/world/china/thousands-call-new-chinese-domestic-violence-helpline-app-2022-09-01/"
+                        }
+                    ]
+                }
+            },
+            zh: {
+                section1: {
+                    title: "全球危机支持与心理健康资源",
+                    items: [
+                        {
+                            name: "全球求助热线查询",
+                            description: "一个全球目录，提供100多个国家超过1600个免费的、保密的支持资源，可通过电话、短信或网络聊天获得。",
+                            link: "https://findahelpline.com"
+                        },
+                        {
+                            name: "NO MORE全球目录",
+                            description: "一个全面的国际目录，涵盖几乎所有联合国认可国家的家庭和性暴力求助热线、专业支持服务和资源，适用于所有性别。",
+                            link: "https://nomoredirectory.org"
+                        },
+                        {
+                            name: "国际预防自杀协会（IASP）",
+                            description: "提供全球危机中心和求助热线的目录，旨在预防自杀并支持受影响的人群。",
+                            link: "https://www.iasp.info/crisis-centres-helplines/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "美国危机支持与家庭暴力资源",
+                    items: [
+                        {
+                            name: "988自杀与危机生命热线",
+                            description: "全天候提供免费和保密的情感支持，帮助处于自杀危机或情绪困扰中的人们。",
+                            contact: "电话或短信: 988",
+                            link: "https://988lifeline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "危机短信热线",
+                            description: "提供免费的、全天候的短信心理健康支持和危机干预服务。",
+                            contact: "发送短信HOME至741741",
+                            link: "https://www.crisistextline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "全国家庭暴力热线",
+                            description: "全天候为家庭暴力受害者提供支持，包括安全计划、危机干预和本地资源。",
+                            contact: "电话: 1-800-799-7233",
+                            link: "https://www.thehotline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "WomensLaw.org法律援助",
+                            description: "为家庭暴力受害者提供通俗易懂的法律信息，包括各州的具体法律和资源。",
+                            link: "https://www.womenslaw.org"
+                        },
+                        {
+                            name: "庇护家庭组织",
+                            description: "位于纽约的组织，为家庭暴力、性交易和相关性别暴力的幸存者提供全面服务。",
+                            link: "https://sanctuaryforfamilies.org"
+                        }
+                    ]
+                },
+                section3: {
+                    title: "中国危机支持与家庭暴力资源",
+                    items: [
+                        {
+                            name: "北京平等热线",
+                            description: "提供家庭暴力受害者支持服务。",
+                            contact: "电话：1511 7905 157",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "红枫热线",
+                            description: "提供女性权益和家庭暴力相关支持。",
+                            contact: "电话：010 6833 3388",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "湖南省妇联热线",
+                            description: "提供妇女权益保护和家庭暴力支持服务。",
+                            contact: "电话：0898 12338 或 0898 12345",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "家庭暴力求助应用",
+                            description: "新推出的家庭暴力求助应用程序，在上线几天内接到数千通求助电话。",
+                            link: "https://www.reuters.com/world/china/thousands-call-new-chinese-domestic-violence-helpline-app-2022-09-01/"
+                        }
+                    ]
+                }
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            renderContent(lang);
+        }
+
+        function renderContent(lang) {
+            const contentDiv = document.getElementById('content');
+            const langContent = content[lang] || content.en;
+            
+            contentDiv.innerHTML = Object.keys(langContent).map((sectionKey, sectionIndex) => {
+                const section = langContent[sectionKey];
+                return `
+                    <div class="section">
+                        <h2>${section.title}</h2>
+                        <div class="cards-container">
+                            ${section.items.map((item, itemIndex) => `
+                                <div class="card${item.isEmergency ? ' emergency' : ''}" style="--animation-order: ${sectionIndex * 6 + itemIndex + 1}">
+                                    <h3>${item.name}</h3>
+                                    <p>${item.description}</p>
+                                    ${item.contact ? `<div class="contact-info">${item.contact}</div>` : ''}
+                                    <a href="${item.link}" target="_blank">
+                                        ${lang === 'ar' ? '← المزيد' : 'Learn More →'}
+                                    </a>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add intersection observer for animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            // Observe all cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                observer.observe(card);
+            });
+        }
+
+        // Load preferred language or default to English
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        document.getElementById('languageSelect').value = preferredLanguage;
+        document.documentElement.lang = preferredLanguage;
+        renderContent(preferredLanguage);
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html> 

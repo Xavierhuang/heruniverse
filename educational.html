@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Resources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #ff6b6b;
+            --accent-color: #4ecdc4;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+            --hover-color: #f8f9fa;
+            --gradient-start: #6c63ff;
+            --gradient-end: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .language-selector select {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .language-selector select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+        }
+
+        .return-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .return-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .return-button::before {
+            content: '←';
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .return-button:hover::before {
+            transform: translateX(-5px);
+        }
+
+        [lang="ar"] .return-button::before {
+            content: '→';
+        }
+
+        [lang="ar"] .return-button:hover::before {
+            transform: translateX(5px);
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            perspective: 1000px;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(108, 99, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(255, 107, 107, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .card a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .card a:hover {
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .card a:hover::after {
+            width: 100%;
+        }
+
+        [lang="ar"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.75rem;
+            }
+
+            .card h3 {
+                font-size: 1.1rem;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+
+            .card a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .card {
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: calc(var(--animation-order) * 0.1s);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="return-button">
+        <span>Return to Pyramid</span>
+    </a>
+
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="ko">한국어</option>
+            <option value="ja">日本語</option>
+            <option value="ar">العربية</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <div id="content">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const content = {
+            en: {
+                section1: {
+                    title: "Premium Business School Scholarships",
+                    items: [
+                        {
+                            name: "IMD BackPack-Excellence Scholarship for Women",
+                            description: "Full MBA scholarship (CHF 133,500) covering tuition and living expenses for women facing financial or personal challenges. Application deadline: July 15, 2025",
+                            link: "https://www.imd.org/degree/mba/scholarships/backpack-scholarship/"
+                        },
+                        {
+                            name: "IMD Nestlé Scholarship for Women",
+                            description: "CHF 25,000 scholarship prioritizing women from developing countries",
+                            link: "https://www.imd.org/degree/mba/scholarships/nestle-scholarship-for-women/"
+                        },
+                        {
+                            name: "IMD Forté Scholarship for Women",
+                            description: "CHF 30,000 scholarship for women demonstrating academic and professional excellence",
+                            link: "https://www.imd.org/degree/mba/scholarships/forte-scholarships-for-women"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "Global Professional Development Programs",
+                    items: [
+                        {
+                            name: "Goldman Sachs 10,000 Women Program",
+                            description: "Free online business education covering funding, marketing, leadership. Courses by Leeds University with globally recognized business certificate",
+                            link: "https://www.goldmansachs.com/community-impact/10000-women/online-courses"
+                        },
+                        {
+                            name: "Jane Street WiSE Program",
+                            description: "Multi-day interactive program for women, transgender, and gender-expansive students exploring math and computer science applications",
+                            link: "https://www.janestreet.com/join-jane-street/programs-and-events/wise/"
+                        }
+                    ]
+                },
+                section3: {
+                    title: "International Scholarships",
+                    items: [
+                        {
+                            name: "P.E.O. International Peace Scholarship",
+                            description: "Up to $12,500 for international women pursuing graduate studies in US/Canada",
+                            link: "https://www.peointernational.org/educational-support/international-peace-scholarship-fund/"
+                        },
+                        {
+                            name: "AAUW Fellowships and Grants",
+                            description: "Various fellowships supporting women's academic and professional advancement since 1888",
+                            link: "https://www.aauw.org/resources/programs/fellowships-grants/"
+                        },
+                        {
+                            name: "Zonta Amelia Earhart Fellowship",
+                            description: "$10,000 fellowship for women pursuing aerospace-related sciences and engineering",
+                            link: "https://www.zonta.org/Web/Web/Programs/Education/Amelia_Earhart_Fellowship.aspx"
+                        },
+                        {
+                            name: "Women's Scholarship for International Students",
+                            description: "$5,000 scholarship for international women studying abroad. Deadline: August 25, 2025",
+                            link: "https://www.educations.com/scholarships/women-scholarship-for-international-students"
+                        }
+                    ]
+                },
+                section4: {
+                    title: "STEM Education and Technology Programs",
+                    items: [
+                        {
+                            name: "Girls Who Code",
+                            description: "Summer immersion programs and after-school clubs teaching coding worldwide",
+                            link: "https://girlswhocode.com/"
+                        },
+                        {
+                            name: "Black Girls Code",
+                            description: "Technology education for African-American girls aged 7-17, covering robotics, VR, and AI",
+                            link: "https://www.wearebgc.org/"
+                        },
+                        {
+                            name: "Girls Make Games",
+                            description: "Three-week summer camps teaching game design and development for girls aged 8-17",
+                            link: "https://www.girlsmakegames.com/"
+                        },
+                        {
+                            name: "British Council Women in STEM",
+                            description: "Scholarships for women to pursue master's degrees in STEM at UK universities",
+                            link: "https://www.britishcouncil.org/study-work-abroad/in-uk/scholarship-women-stem"
+                        },
+                        {
+                            name: "Generation Google Scholarship",
+                            description: "$10,000 scholarship for computer science students, prioritizing women and minorities",
+                            link: "https://www.google.com/about/careers/applications/buildyourfuture/scholarships/generation-google-scholarship"
+                        }
+                    ]
+                },
+                section5: {
+                    title: "Youth Development and Special Programs",
+                    items: [
+                        {
+                            name: "Girls Garage",
+                            description: "Building and design program teaching carpentry, welding, and architecture to girls 9-17",
+                            link: "https://girlsgarage.org/"
+                        },
+                        {
+                            name: "Jack Kent Cooke Young Scholars",
+                            description: "Five-year program providing academic support and guidance from 7th grade through high school",
+                            link: "https://www.jkcf.org/our-scholarships/young-scholars-program/"
+                        },
+                        {
+                            name: "Carson Scholars Fund",
+                            description: "$1,000 scholarship for grades 4-11 students excelling in academics and community service",
+                            link: "https://carsonscholars.org/"
+                        },
+                        {
+                            name: "African Science Academy",
+                            description: "11-month advanced mathematics and physics program for African girls aged 16-19",
+                            link: "https://www.africanscienceacademy.org/"
+                        },
+                        {
+                            name: "Camfed",
+                            description: "Supporting girls' education and economic independence in sub-Saharan Africa",
+                            link: "https://camfed.org/"
+                        }
+                    ]
+                },
+                section6: {
+                    title: "Corporate STEM Scholarships",
+                    items: [
+                        {
+                            name: "Women at Microsoft Scholarship",
+                            description: "For high school seniors pursuing STEAM fields in US universities",
+                            link: "https://www.microsoft.com/en-us/diversity/programs/women-at-microsoft-scholarship"
+                        },
+                        {
+                            name: "Hyundai Women in STEM",
+                            description: "Supporting female students in STEM-related studies",
+                            link: "https://recf.org/scholarship/hyundai-women-in-stem-scholarship/"
+                        },
+                        {
+                            name: "BHW Women in STEM",
+                            description: "For undergraduate or master's students in science, technology, engineering, or mathematics",
+                            link: "https://thebhwgroup.com/scholarship"
+                        },
+                        {
+                            name: "SNC Women in STEM",
+                            description: "Supporting next generation of female leaders in science and technology",
+                            link: "https://studyabroad.temple.edu/planning-resources/financing-study-abroad/scholarships/sierra-nevada-corporation-snc-women-stem-scholarship"
+                        }
+                    ]
+                }
+            },
+            zh: {
+                section1: {
+                    title: "顶级商学院奖学金",
+                    items: [
+                        {
+                            name: "IMD BackPack-Excellence女性奖学金",
+                            description: "为面临财务或个人挑战的女性提供全额MBA奖学金和生活费支持（CHF 133,500）。申请截止日期：2025年7月15日",
+                            link: "https://www.imd.org/degree/mba/scholarships/backpack-scholarship/"
+                        },
+                        {
+                            name: "IMD雀巢女性奖学金",
+                            description: "CHF 25,000奖学金，优先考虑来自发展中国家的女性申请者",
+                            link: "https://www.imd.org/degree/mba/scholarships/nestle-scholarship-for-women/"
+                        },
+                        {
+                            name: "IMD Forté女性奖学金",
+                            description: "为在学术或职业方面表现卓越的女性提供CHF 30,000奖学金",
+                            link: "https://www.imd.org/degree/mba/scholarships/forte-scholarships-for-women"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "全球职业发展项目",
+                    items: [
+                        {
+                            name: "高盛10,000女性计划",
+                            description: "提供免费在线商业教育课程，涵盖资金、市场营销、领导力等。由利兹大学提供课程，完成后可获得全球认可的商业证书",
+                            link: "https://www.goldmansachs.com/community-impact/10000-women/online-courses"
+                        },
+                        {
+                            name: "Jane Street WiSE项目",
+                            description: "面向即将进入大学的女性、跨性别及性别多元学生的多日互动项目，探索数学和计算机科学在实际问题中的应用",
+                            link: "https://www.janestreet.com/join-jane-street/programs-and-events/wise/"
+                        }
+                    ]
+                },
+                section3: {
+                    title: "国际奖学金",
+                    items: [
+                        {
+                            name: "P.E.O.国际和平奖学金",
+                            description: "为非美国和加拿大籍女性提供最高$12,500的研究生奖学金",
+                            link: "https://www.peointernational.org/educational-support/international-peace-scholarship-fund/"
+                        },
+                        {
+                            name: "AAUW奖学金与资助",
+                            description: "自1888年以来为女性研究生教育提供多种奖学金和资助项目",
+                            link: "https://www.aauw.org/resources/programs/fellowships-grants/"
+                        },
+                        {
+                            name: "Zonta Amelia Earhart奖学金",
+                            description: "为从事航空航天相关科学或工程博士研究的女性提供$10,000奖学金",
+                            link: "https://www.zonta.org/Web/Web/Programs/Education/Amelia_Earhart_Fellowship.aspx"
+                        },
+                        {
+                            name: "国际女性奖学金",
+                            description: "为国际女学生提供$5,000奖学金。申请截止日期：2025年8月25日",
+                            link: "https://www.educations.com/scholarships/women-scholarship-for-international-students"
+                        }
+                    ]
+                },
+                section4: {
+                    title: "STEM教育和技术项目",
+                    items: [
+                        {
+                            name: "Girls Who Code编程教育",
+                            description: "提供夏季沉浸式项目和全球课后编程俱乐部",
+                            link: "https://girlswhocode.com/"
+                        },
+                        {
+                            name: "Black Girls Code",
+                            description: "为7-17岁非裔美国女孩提供机器人、虚拟现实、人工智能等技术教育",
+                            link: "https://www.wearebgc.org/"
+                        },
+                        {
+                            name: "Girls Make Games",
+                            description: "为8-17岁女孩提供为期三周的游戏设计和开发夏令营",
+                            link: "https://www.girlsmakegames.com/"
+                        },
+                        {
+                            name: "英国文化协会女性STEM奖学金",
+                            description: "为女性提供在英国攻读STEM硕士学位的奖学金",
+                            link: "https://www.britishcouncil.org/study-work-abroad/in-uk/scholarship-women-stem"
+                        },
+                        {
+                            name: "谷歌世代奖学金",
+                            description: "为计算机科学专业学生提供$10,000奖学金，优先考虑女性和少数族裔",
+                            link: "https://www.google.com/about/careers/applications/buildyourfuture/scholarships/generation-google-scholarship"
+                        }
+                    ]
+                },
+                section5: {
+                    title: "青年发展和特别项目",
+                    items: [
+                        {
+                            name: "Girls Garage工程项目",
+                            description: "为9-17岁女孩提供木工、焊接、建筑等技能培训",
+                            link: "https://girlsgarage.org/"
+                        },
+                        {
+                            name: "Jack Kent Cooke青年学者项目",
+                            description: "为7年级学生提供为期五年的教育资助和指导",
+                            link: "https://www.jkcf.org/our-scholarships/young-scholars-program/"
+                        },
+                        {
+                            name: "Carson学者基金",
+                            description: "为4-11年级优秀学生提供$1,000奖学金",
+                            link: "https://carsonscholars.org/"
+                        },
+                        {
+                            name: "非洲科学学院",
+                            description: "为16-19岁非洲女孩提供为期11个月的高级数学和物理课程",
+                            link: "https://www.africanscienceacademy.org/"
+                        },
+                        {
+                            name: "Camfed女童教育计划",
+                            description: "支持撒哈拉以南非洲地区女童完成学业并获得经济独立",
+                            link: "https://camfed.org/"
+                        }
+                    ]
+                },
+                section6: {
+                    title: "企业STEM奖学金",
+                    items: [
+                        {
+                            name: "微软女性奖学金",
+                            description: "为计划在美国攻读STEAM相关专业的高中女生提供奖学金",
+                            link: "https://www.microsoft.com/en-us/diversity/programs/women-at-microsoft-scholarship"
+                        },
+                        {
+                            name: "现代汽车女性STEM奖学金",
+                            description: "支持女性学生攻读STEM相关领域",
+                            link: "https://recf.org/scholarship/hyundai-women-in-stem-scholarship/"
+                        },
+                        {
+                            name: "BHW女性STEM奖学金",
+                            description: "为攻读科学、技术、工程或数学本科或硕士学位的女性提供奖学金",
+                            link: "https://thebhwgroup.com/scholarship"
+                        },
+                        {
+                            name: "SNC女性STEM奖学金",
+                            description: "支持科技领域的下一代女性领导者",
+                            link: "https://studyabroad.temple.edu/planning-resources/financing-study-abroad/scholarships/sierra-nevada-corporation-snc-women-stem-scholarship"
+                        }
+                    ]
+                }
+            }
+            // Additional languages can be added here following the same structure
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            renderContent(lang);
+        }
+
+        function renderContent(lang) {
+            const contentDiv = document.getElementById('content');
+            const langContent = content[lang] || content.en; // Fallback to English if language not available
+            
+            contentDiv.innerHTML = Object.keys(langContent).map((sectionKey, sectionIndex) => {
+                const section = langContent[sectionKey];
+                return `
+                    <div class="section">
+                        <h2>${section.title}</h2>
+                        <div class="cards-container">
+                            ${section.items.map((item, itemIndex) => `
+                                <div class="card" style="--animation-order: ${sectionIndex * 6 + itemIndex + 1}">
+                                    <h3>${item.name}</h3>
+                                    <p>${item.description}</p>
+                                    <a href="${item.link}" target="_blank">
+                                        ${lang === 'ar' ? '← المزيد' : 'Learn More →'}
+                                    </a>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add intersection observer for animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            // Observe all cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                observer.observe(card);
+            });
+        }
+
+        // Load preferred language or default to English
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        document.getElementById('languageSelect').value = preferredLanguage;
+        document.documentElement.lang = preferredLanguage;
+        renderContent(preferredLanguage);
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html> 

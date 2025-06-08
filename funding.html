@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funding Resources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #ff6b6b;
+            --accent-color: #4ecdc4;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+            --hover-color: #f8f9fa;
+            --gradient-start: #6c63ff;
+            --gradient-end: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .language-selector select {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .language-selector select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+        }
+
+        .return-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .return-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .return-button::before {
+            content: '←';
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .return-button:hover::before {
+            transform: translateX(-5px);
+        }
+
+        [lang="ar"] .return-button::before {
+            content: '→';
+        }
+
+        [lang="ar"] .return-button:hover::before {
+            transform: translateX(5px);
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            perspective: 1000px;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(108, 99, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(255, 107, 107, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .card a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .card a:hover {
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .card a:hover::after {
+            width: 100%;
+        }
+
+        [lang="ar"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.75rem;
+            }
+
+            .card h3 {
+                font-size: 1.1rem;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+
+            .card a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .card {
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: calc(var(--animation-order) * 0.1s);
+        }
+
+        /* New styles for events section */
+        .events-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            background: var(--hover-color);
+        }
+
+        .event-date {
+            min-width: 80px;
+            text-align: center;
+            padding: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-org {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .event-description {
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .add-to-calendar {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-calendar:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .calendar-container {
+            margin-top: 2rem;
+            height: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        #loading-events {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-color);
+        }
+
+        .filter-section {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .filter-button:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="return-button">
+        <span>Return to Pyramid</span>
+    </a>
+
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="ko">한국어</option>
+            <option value="ja">日本語</option>
+            <option value="ar">العربية</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <div id="content">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+
+        <div class="events-section">
+            <h2>Upcoming Events & Opportunities</h2>
+            
+            <div class="filter-section">
+                <button class="filter-button active" data-filter="all">All Events</button>
+                <button class="filter-button" data-filter="networking">Networking</button>
+                <button class="filter-button" data-filter="funding">Funding</button>
+                <button class="filter-button" data-filter="workshop">Workshops</button>
+            </div>
+
+            <div id="loading-events">
+                Loading upcoming events...
+            </div>
+
+            <div id="events-list"></div>
+
+            <div class="calendar-container">
+                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=local&showTitle=0&showNav=1&showPrint=0&showTabs=1&showCalendars=0&src=CALENDAR_ID" style="border:0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const content = {
+            en: {
+                section1: {
+                    title: "Global Professional Networks for Women in Finance",
+                    items: [
+                        {
+                            name: "Women in ETFs",
+                            description: "Global community for women in the ETF industry",
+                            link: "https://www.womeninetfs.com"
+                        },
+                        {
+                            name: "100 Women in Finance",
+                            description: "30,000+ members worldwide in investment, alternatives, and leadership",
+                            link: "https://100women.org"
+                        },
+                        {
+                            name: "Financial Women's Association (FWA)",
+                            description: "One of the oldest women's finance groups in NYC",
+                            link: "https://www.fwa.org/"
+                        },
+                        {
+                            name: "Ellevate Network",
+                            description: "Cross-industry career development network",
+                            link: "https://www.ellevatenetwork.com"
+                        },
+                        {
+                            name: "Girls Who Invest",
+                            description: "Trains college women for asset management roles",
+                            link: "https://www.girlswhoinvest.org/"
+                        },
+                        {
+                            name: "Sadie Collective",
+                            description: "Empowers Black women in economics and data",
+                            link: "https://www.sadiecollective.org/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "Venture Capital Firms Supporting Women Entrepreneurs",
+                    items: [
+                        {
+                            name: "SoGal Ventures",
+                            description: "First female-led, millennial-focused VC firm",
+                            link: "https://sogalventures.com"
+                        },
+                        {
+                            name: "Female Founders Fund",
+                            description: "Early-stage capital for female-led startups",
+                            link: "https://femalefoundersfund.com"
+                        },
+                        {
+                            name: "Halogen Ventures",
+                            description: "VC for women-led consumer tech brands",
+                            link: "https://halogenvc.com"
+                        },
+                        {
+                            name: "Fearless Fund",
+                            description: "Investing in women of color entrepreneurs",
+                            link: "https://www.fearless.fund"
+                        },
+                        {
+                            name: "BBG Ventures",
+                            description: "Backing women-led tech startups",
+                            link: "https://bbgventures.com"
+                        },
+                        {
+                            name: "BossBabe",
+                            description: "Global platform for women in business",
+                            link: "https://bossbabe.com"
+                        },
+                        {
+                            name: "SheWorx",
+                            description: "Connects women founders with investors",
+                            link: "https://www.sheworx.com"
+                        },
+                        {
+                            name: "Cartier Women's Initiative",
+                            description: "Grants and recognition for women entrepreneurs",
+                            link: "https://www.cartierwomensinitiative.com"
+                        },
+                        {
+                            name: "Tory Burch Foundation",
+                            description: "Capital and training for small businesswomen",
+                            link: "https://www.toryburchfoundation.org"
+                        }
+                    ]
+                }
+            },
+            zh: {
+                section1: {
+                    title: "全球女性金融与投资职业网络",
+                    items: [
+                        {
+                            name: "ETF女性领袖联盟",
+                            description: "面向ETF行业女性的全球网络",
+                            link: "https://www.womeninetfs.com"
+                        },
+                        {
+                            name: "百位女性金融领袖",
+                            description: "服务全球女性金融专业人士的领导网络",
+                            link: "https://100women.org"
+                        },
+                        {
+                            name: "金融女性协会",
+                            description: "纽约最早的女性金融协会之一",
+                            link: "https://www.fwa.org/"
+                        },
+                        {
+                            name: "Ellevate全球女性平台",
+                            description: "跨行业女性职业发展社群",
+                            link: "https://www.ellevatenetwork.com"
+                        },
+                        {
+                            name: "女孩投资未来",
+                            description: "为女大学生提供投资管理培训和实习机会",
+                            link: "https://www.girlswhoinvest.org/"
+                        },
+                        {
+                            name: "Sadie黑人女性平台",
+                            description: "支持黑人女性从事经济、金融、数据行业",
+                            link: "https://www.sadiecollective.org/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "支持女性创业者的风险投资公司",
+                    items: [
+                        {
+                            name: "SoGal女性风投基金",
+                            description: "全球首家由亚裔女性创立、聚焦千禧世代的风投公司",
+                            link: "https://sogalventures.com"
+                        },
+                        {
+                            name: "女性创始人基金",
+                            description: "投资女性领导的早期科技公司",
+                            link: "https://femalefoundersfund.com"
+                        },
+                        {
+                            name: "Halogen女性消费基金",
+                            description: "专注女性消费品牌的投资",
+                            link: "https://halogenvc.com"
+                        },
+                        {
+                            name: "无畏基金",
+                            description: "投资少数族裔女性企业家",
+                            link: "https://www.fearless.fund"
+                        },
+                        {
+                            name: "BBG女性科技基金",
+                            description: "投资女性创始的技术类公司",
+                            link: "https://bbgventures.com"
+                        },
+                        {
+                            name: "BossBabe 女性成长平台",
+                            description: "面向创业女性的全球成长社群",
+                            link: "https://bossbabe.com"
+                        },
+                        {
+                            name: "SheWorx 投资连接平台",
+                            description: "帮助女性创业者与投资人对接",
+                            link: "https://www.sheworx.com"
+                        },
+                        {
+                            name: "卡地亚女性创业奖",
+                            description: "为全球女性创业者提供奖金与国际认可",
+                            link: "https://www.cartierwomensinitiative.com"
+                        },
+                        {
+                            name: "Tory Burch 女性基金会",
+                            description: "为女性小企业主提供贷款与培训",
+                            link: "https://www.toryburchfoundation.org"
+                        }
+                    ]
+                }
+            },
+            fr: {
+                section1: {
+                    title: "Réseaux professionnels mondiaux pour les femmes en finance",
+                    items: [
+                        {
+                            name: "Women in ETFs",
+                            description: "Communauté mondiale pour les femmes dans l'industrie des ETF",
+                            link: "https://www.womeninetfs.com"
+                        },
+                        {
+                            name: "100 Women in Finance",
+                            description: "Plus de 30 000 membres dans le monde entier dans l'investissement, les alternatives et le leadership",
+                            link: "https://100women.org"
+                        },
+                        {
+                            name: "Financial Women's Association (FWA)",
+                            description: "L'un des plus anciens groupes financiers féminins à New York",
+                            link: "https://www.fwa.org/"
+                        },
+                        {
+                            name: "Ellevate Network",
+                            description: "Réseau de développement de carrière intersectoriel",
+                            link: "https://www.ellevatenetwork.com"
+                        },
+                        {
+                            name: "Girls Who Invest",
+                            description: "Forme les étudiantes universitaires à des rôles en gestion d'actifs",
+                            link: "https://www.girlswhoinvest.org/"
+                        },
+                        {
+                            name: "Sadie Collective",
+                            description: "Autonomise les femmes noires en économie et en données",
+                            link: "https://www.sadiecollective.org/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "Sociétés de capital-risque soutenant les femmes entrepreneures",
+                    items: [
+                        {
+                            name: "SoGal Ventures",
+                            description: "Premier fonds dirigé par des femmes axé sur les milléniaux",
+                            link: "https://sogalventures.com"
+                        },
+                        {
+                            name: "Female Founders Fund",
+                            description: "Capital pour startups dirigées par des femmes",
+                            link: "https://femalefoundersfund.com"
+                        },
+                        {
+                            name: "Halogen Ventures",
+                            description: "Fonds pour marques technologiques dirigées par des femmes",
+                            link: "https://halogenvc.com"
+                        },
+                        {
+                            name: "Fearless Fund",
+                            description: "Investit dans les femmes entrepreneures de couleur",
+                            link: "https://www.fearless.fund"
+                        },
+                        {
+                            name: "BBG Ventures",
+                            description: "Soutient les startups technologiques fondées par des femmes",
+                            link: "https://bbgventures.com"
+                        },
+                        {
+                            name: "BossBabe",
+                            description: "Plateforme mondiale pour les femmes entrepreneures",
+                            link: "https://bossbabe.com"
+                        },
+                        {
+                            name: "SheWorx",
+                            description: "Connecte les fondatrices aux investisseurs",
+                            link: "https://www.sheworx.com"
+                        },
+                        {
+                            name: "Initiative Cartier",
+                            description: "Prix pour les femmes entrepreneures",
+                            link: "https://www.cartierwomensinitiative.com"
+                        },
+                        {
+                            name: "Fondation Tory Burch",
+                            description: "Capital et formation pour femmes entrepreneures",
+                            link: "https://www.toryburchfoundation.org"
+                        }
+                    ]
+                }
+            },
+            de: {
+                section1: {
+                    title: "Globale berufliche Netzwerke für Frauen im Finanzwesen",
+                    items: [
+                        {
+                            name: "Women in ETFs",
+                            description: "Globale Gemeinschaft für Frauen in der ETF-Branche",
+                            link: "https://www.womeninetfs.com"
+                        },
+                        {
+                            name: "100 Women in Finance",
+                            description: "Über 30.000 Mitglieder weltweit in Investitionen, Alternativen und Führung",
+                            link: "https://100women.org"
+                        },
+                        {
+                            name: "Financial Women's Association (FWA)",
+                            description: "Eine der ältesten Frauengruppen im Finanzwesen in NYC",
+                            link: "https://www.fwa.org/"
+                        },
+                        {
+                            name: "Ellevate Network",
+                            description: "Branchenübergreifendes Karriereentwicklungsnetzwerk",
+                            link: "https://www.ellevatenetwork.com"
+                        },
+                        {
+                            name: "Girls Who Invest",
+                            description: "Bildet Studentinnen für Rollen im Asset Management aus",
+                            link: "https://www.girlswhoinvest.org/"
+                        },
+                        {
+                            name: "Sadie Collective",
+                            description: "Stärkt schwarze Frauen in Wirtschaft und Daten",
+                            link: "https://www.sadiecollective.org/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "Risikokapitalfirmen, die Unternehmerinnen unterstützen",
+                    items: [
+                        {
+                            name: "SoGal Ventures",
+                            description: "Erstes von Frauen gegründetes VC mit Fokus auf Millennials",
+                            link: "https://sogalventures.com"
+                        },
+                        {
+                            name: "Female Founders Fund",
+                            description: "Frühphasen-Kapital für Startups von Frauen",
+                            link: "https://femalefoundersfund.com"
+                        },
+                        {
+                            name: "Halogen Ventures",
+                            description: "VC für von Frauen geführte Konsumtechnologien",
+                            link: "https://halogenvc.com"
+                        },
+                        {
+                            name: "Fearless Fund",
+                            description: "Investiert in Unternehmerinnen mit Migrationshintergrund",
+                            link: "https://www.fearless.fund"
+                        },
+                        {
+                            name: "BBG Ventures",
+                            description: "Unterstützt von Frauen gegründete Tech-Startups",
+                            link: "https://bbgventures.com"
+                        },
+                        {
+                            name: "BossBabe",
+                            description: "Globale Plattform für Unternehmerinnen",
+                            link: "https://bossbabe.com"
+                        },
+                        {
+                            name: "SheWorx",
+                            description: "Verbindet Gründerinnen mit Investoren",
+                            link: "https://www.sheworx.com"
+                        },
+                        {
+                            name: "Cartier Women's Initiative",
+                            description: "Preis für Unternehmerinnen weltweit",
+                            link: "https://www.cartierwomensinitiative.com"
+                        },
+                        {
+                            name: "Tory Burch Stiftung",
+                            description: "Kapital und Schulung für Unternehmerinnen",
+                            link: "https://www.toryburchfoundation.org"
+                        }
+                    ]
+                }
+            },
+            es: {
+                section1: {
+                    title: "Redes profesionales globales para mujeres en finanzas",
+                    items: [
+                        {
+                            name: "Women in ETFs",
+                            description: "Comunidad global para mujeres en la industria de ETF",
+                            link: "https://www.womeninetfs.com"
+                        },
+                        {
+                            name: "100 Women in Finance",
+                            description: "Más de 30,000 miembros en todo el mundo en inversiones, alternativas y liderazgo",
+                            link: "https://100women.org"
+                        },
+                        {
+                            name: "Financial Women's Association (FWA)",
+                            description: "Uno de los grupos financieros femeninos más antiguos en Nueva York",
+                            link: "https://www.fwa.org/"
+                        },
+                        {
+                            name: "Ellevate Network",
+                            description: "Red de desarrollo profesional intersectorial",
+                            link: "https://www.ellevatenetwork.com"
+                        },
+                        {
+                            name: "Girls Who Invest",
+                            description: "Capacita a mujeres universitarias para roles en gestión de activos",
+                            link: "https://www.girlswhoinvest.org/"
+                        },
+                        {
+                            name: "Sadie Collective",
+                            description: "Empodera a mujeres negras en economía y datos",
+                            link: "https://www.sadiecollective.org/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "Empresas de capital de riesgo que apoyan a mujeres emprendedoras",
+                    items: [
+                        {
+                            name: "SoGal Ventures",
+                            description: "Primera VC liderada por mujeres, centrada en millennials",
+                            link: "https://sogalventures.com"
+                        },
+                        {
+                            name: "Female Founders Fund",
+                            description: "Capital inicial para startups lideradas por mujeres",
+                            link: "https://femalefoundersfund.com"
+                        },
+                        {
+                            name: "Halogen Ventures",
+                            description: "VC para marcas de tecnología dirigidas por mujeres",
+                            link: "https://halogenvc.com"
+                        },
+                        {
+                            name: "Fearless Fund",
+                            description: "Invierte en mujeres emprendedoras de color",
+                            link: "https://www.fearless.fund"
+                        },
+                        {
+                            name: "BBG Ventures",
+                            description: "Apoya startups tecnológicas fundadas por mujeres",
+                            link: "https://bbgventures.com"
+                        },
+                        {
+                            name: "BossBabe",
+                            description: "Plataforma global para mujeres emprendedoras",
+                            link: "https://bossbabe.com"
+                        },
+                        {
+                            name: "SheWorx",
+                            description: "Conecta a mujeres fundadoras con inversores",
+                            link: "https://www.sheworx.com"
+                        },
+                        {
+                            name: "Iniciativa de Mujeres Cartier",
+                            description: "Otorga becas y reconocimiento a mujeres emprendedoras",
+                            link: "https://www.cartierwomensinitiative.com"
+                        },
+                        {
+                            name: "Fundación Tory Burch",
+                            description: "Capital y capacitación para mujeres empresarias",
+                            link: "https://www.toryburchfoundation.org"
+                        }
+                    ]
+                }
+            },
+            ko: {
+                section1: {
+                    title: "금융 분야 여성들을 위한 글로벌 전문 네트워크",
+                    items: [
+                        {
+                            name: "Women in ETFs",
+                            description: "ETF 산업의 여성들을 위한 글로벌 커뮤니티",
+                            link: "https://www.womeninetfs.com"
+                        },
+                        {
+                            name: "100 Women in Finance",
+                            description: "전 세계 투자, 대안 및 리더십 분야의 30,000명 이상의 회원 보유",
+                            link: "https://100women.org"
+                        },
+                        {
+                            name: "Financial Women's Association (FWA)",
+                            description: "뉴욕에서 가장 오래된 여성 금융 그룹 중 하나",
+                            link: "https://www.fwa.org/"
+                        },
+                        {
+                            name: "Ellevate Network",
+                            description: "산업 간 경력 개발 네트워크",
+                            link: "https://www.ellevatenetwork.com"
+                        },
+                        {
+                            name: "Girls Who Invest",
+                            description: "대학 여성들에게 자산 관리 역할을 위한 교육 제공",
+                            link: "https://www.girlswhoinvest.org/"
+                        },
+                        {
+                            name: "Sadie Collective",
+                            description: "경제 및 데이터 분야에서 흑인 여성의 역량 강화",
+                            link: "https://www.sadiecollective.org/"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "여성 기업가를 지원하는 벤처 캐피털 회사들",
+                    items: [
+                        {
+                            name: "SoGal Ventures",
+                            description: "여성 주도 밀레니얼 세대 중심의 최초 VC 회사",
+                            link: "https://sogalventures.com"
+                        },
+                        {
+                            name: "Female Founders Fund",
+                            description: "여성 주도 스타트업을 위한 초기 자본 제공",
+                            link: "https://femalefoundersfund.com"
+                        },
+                        {
+                            name: "Halogen Ventures",
+                            description: "여성 소비자 기술 브랜드 투자",
+                            link: "https://halogenvc.com"
+                        },
+                        {
+                            name: "Fearless Fund",
+                            description: "유색인종 여성 기업가에게 투자",
+                            link: "https://www.fearless.fund"
+                        },
+                        {
+                            name: "BBG Ventures",
+                            description: "여성 창업자의 기술 스타트업 투자",
+                            link: "https://bbgventures.com"
+                        },
+                        {
+                            name: "BossBabe",
+                            description: "여성 비즈니스 플랫폼",
+                            link: "https://bossbabe.com"
+                        },
+                        {
+                            name: "SheWorx",
+                            description: "여성 창업자와 투자자 연결 플랫폼",
+                            link: "https://www.sheworx.com"
+                        },
+                        {
+                            name: "Cartier Women's Initiative",
+                            description: "글로벌 여성 기업가 시상 및 지원",
+                            link: "https://www.cartierwomensinitiative.com"
+                        },
+                        {
+                            name: "Tory Burch 재단",
+                            description: "여성 소상공인을 위한 자금 및 교육",
+                            link: "https://www.toryburchfoundation.org"
+                        }
+                    ]
+                }
+            },
+            // ... Add other languages here
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            renderContent(lang);
+        }
+
+        function renderContent(lang) {
+            const contentDiv = document.getElementById('content');
+            const langContent = content[lang];
+            
+            contentDiv.innerHTML = `
+                <div class="section">
+                    <h2>${langContent.section1.title}</h2>
+                    <div class="cards-container">
+                        ${langContent.section1.items.map((item, index) => `
+                            <div class="card" style="--animation-order: ${index + 1}">
+                                <h3>${item.name}</h3>
+                                <p>${item.description}</p>
+                                <a href="${item.link}" target="_blank">
+                                    ${lang === 'ar' ? '← المزيد' : 'Learn More →'}
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>${langContent.section2.title}</h2>
+                    <div class="cards-container">
+                        ${langContent.section2.items.map((item, index) => `
+                            <div class="card" style="--animation-order: ${index + 7}">
+                                <h3>${item.name}</h3>
+                                <p>${item.description}</p>
+                                <a href="${item.link}" target="_blank">
+                                    ${lang === 'ar' ? '← المزيد' : 'Learn More →'}
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add intersection observer for animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            // Observe all cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                observer.observe(card);
+            });
+        }
+
+        // Load preferred language or default to English
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        document.getElementById('languageSelect').value = preferredLanguage;
+        document.documentElement.lang = preferredLanguage;
+        renderContent(preferredLanguage);
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Google Calendar API configuration
+        const CLIENT_ID = 'YOUR_CLIENT_ID';
+        const API_KEY = 'YOUR_API_KEY';
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+        const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
+
+        // Initialize the API
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
+
+        async function initializeGapiClient() {
+            await gapi.client.init({
+                apiKey: API_KEY,
+                discoveryDocs: [DISCOVERY_DOC],
+            });
+            gapiInited = true;
+            maybeEnableButtons();
+        }
+
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // defined later
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                loadEvents();
+            }
+        }
+
+        // Calendar event sources
+        const eventSources = [
+            {
+                name: "Women in ETFs",
+                calendarId: "womeninetfs.com_calendar@group.calendar.google.com"
+            },
+            {
+                name: "100 Women in Finance",
+                calendarId: "100women.org_calendar@group.calendar.google.com"
+            },
+            // Add more calendar IDs here
+        ];
+
+        async function loadEvents() {
+            try {
+                const events = [];
+                for (const source of eventSources) {
+                    const response = await gapi.client.calendar.events.list({
+                        'calendarId': source.calendarId,
+                        'timeMin': (new Date()).toISOString(),
+                        'showDeleted': false,
+                        'singleEvents': true,
+                        'maxResults': 10,
+                        'orderBy': 'startTime'
+                    });
+
+                    events.push(...response.result.items.map(event => ({
+                        ...event,
+                        source: source.name
+                    })));
+                }
+
+                displayEvents(events);
+            } catch (err) {
+                console.error('Error loading events:', err);
+                document.getElementById('loading-events').innerHTML = 'Error loading events. Please try again later.';
+            }
+        }
+
+        function displayEvents(events) {
+            const container = document.getElementById('events-list');
+            container.innerHTML = '';
+
+            events.sort((a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date));
+
+            events.forEach(event => {
+                const startDate = new Date(event.start.dateTime || event.start.date);
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.innerHTML = `
+                    <div class="event-date">
+                        <div>${startDate.toLocaleDateString('en-US', { month: 'short' })}</div>
+                        <div style="font-size: 1.5rem;">${startDate.getDate()}</div>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-title">${event.summary}</div>
+                        <div class="event-org">${event.source}</div>
+                        <div class="event-description">${event.description || ''}</div>
+                        <button class="add-to-calendar" onclick="addToCalendar('${event.id}')">
+                            Add to My Calendar
+                        </button>
+                    </div>
+                `;
+                container.appendChild(eventCard);
+            });
+
+            document.getElementById('loading-events').style.display = 'none';
+        }
+
+        async function addToCalendar(eventId) {
+            try {
+                await gapi.client.calendar.events.insert({
+                    'calendarId': 'primary',
+                    'resource': {
+                        // Event details
+                    }
+                });
+                alert('Event added to your calendar!');
+            } catch (err) {
+                console.error('Error adding event:', err);
+                alert('Error adding event to calendar. Please try again.');
+            }
+        }
+
+        // Filter events
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.filter-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const filter = button.dataset.filter;
+                filterEvents(filter);
+            });
+        });
+
+        function filterEvents(filter) {
+            const events = document.querySelectorAll('.event-card');
+            events.forEach(event => {
+                if (filter === 'all' || event.dataset.category === filter) {
+                    event.style.display = 'flex';
+                } else {
+                    event.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

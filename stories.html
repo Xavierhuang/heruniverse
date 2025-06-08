@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Her Universe - Global Stories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Mapbox GL JS -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF3B0;
+            --yellow: #FFEB3B;
+            --golden-yellow: #FFC107;
+            --purple: #800080;
+            --light-purple: #E1BEE7;
+            --medium-purple: #9C27B0;
+            --dark-purple: #4A235A;
+            --elegant-purple: #5D4777;
+            --text-color: #2D3436;
+            --card-bg: #ffffff;
+            --hover-color: #f8f9fa;
+            --gradient-start: #2C3E50;
+            --gradient-end: #3498DB;
+            --emerald: #2ECC71;
+            --navy: #34495E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, 
+                var(--golden-yellow) 0%,
+                var(--light-gold) 30%,
+                var(--light-purple) 70%,
+                var(--medium-purple) 100%
+            );
+            min-height: 100vh;
+            position: relative;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f9fa;
+            margin-top: 0;
+        }
+
+        .return-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 24px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .return-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .add-story-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--purple), var(--gold));
+            color: white;
+            padding: 20px 30px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .add-story-button .upload-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .add-story-button .description-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .add-story-button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            box-shadow: 0 6px 20px rgba(128, 0, 128, 0.3);
+        }
+
+        .add-story-button svg {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--purple);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(128, 0, 128, 0.1);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--purple);
+            box-shadow: 0 0 10px rgba(128, 0, 128, 0.1);
+            background: white;
+        }
+
+        .form-group input[type="checkbox"] {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .submit-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-transform: uppercase;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(128, 0, 128, 0.3);
+            background: linear-gradient(135deg, var(--purple), var(--golden-yellow));
+        }
+
+        .submit-button:active {
+            transform: translateY(1px);
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .submit-button:hover::before {
+            opacity: 1;
+        }
+
+        .profile-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .marker-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .marker-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-color: var(--gold);
+        }
+
+        .mapboxgl-popup {
+            max-width: 350px;
+        }
+
+        .mapboxgl-popup-content {
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .story-popup {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .story-popup img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .story-popup h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--purple);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .story-popup .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .story-popup .tag {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            color: white;
+            opacity: 0.8;
+        }
+
+        .story-popup .location {
+            font-size: 0.85rem;
+            color: var(--purple);
+            font-style: italic;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        /* Filter tabs positioning */
+        .filter-tabs {
+            position: fixed;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+            padding: 10px 20px;
+            border-radius: 35px;
+            z-index: 1000;
+            white-space: nowrap;
+            max-width: 95vw;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .filter-tab.country {
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+        }
+
+        .filter-tab.industry {
+            background: linear-gradient(135deg, var(--purple), var(--golden-yellow));
+        }
+
+        .filter-tab.ethnicity {
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+        }
+
+        .filter-tab.leader {
+            background: linear-gradient(135deg, var(--purple), var(--golden-yellow));
+        }
+
+        .filter-tab.mom {
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+        }
+
+        .filter-tab.help {
+            background: linear-gradient(135deg, var(--purple), var(--golden-yellow));
+        }
+
+        .filter-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 180px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .dropdown-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dropdown-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        .dropdown-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            border-radius: 4px;
+        }
+
+        .dropdown-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--purple);
+        }
+
+        .dropdown-option:hover {
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            color: white;
+        }
+
+        .filter-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .mapboxgl-canvas {
+            border-radius: 0;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        .nav-arrow {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 25px 15px;
+            border-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .nav-arrow:hover {
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 6px 25px rgba(128, 0, 128, 0.2);
+            border-color: rgba(128, 0, 128, 0.3);
+            color: var(--accent-color);
+        }
+
+        .nav-arrow .arrow {
+            font-size: 2.2rem;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-arrow .label {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .admin-link {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 24px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--purple);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .admin-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(128, 0, 128, 0.2);
+            border-color: var(--purple);
+        }
+
+        .admin-link svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--purple);
+        }
+
+        /* Timeline styles */
+        .timeline-container {
+            position: fixed;
+            top: 22%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            max-width: 800px;
+            z-index: 1;
+        }
+
+        .timeline {
+            position: relative;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--golden-yellow), var(--purple));
+            border-radius: 2px;
+            margin: 20px 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border: 2px solid var(--purple);
+            border-radius: 50%;
+        }
+
+        .timeline-marker.left { left: 0%; }
+        .timeline-marker.middle { left: 50%; }
+        .timeline-marker.right { left: 100%; }
+
+        .timeline-label {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline-slider {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            cursor: grab;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .timeline-slider:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .timeline-slider:active {
+            cursor: grabbing;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.2rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--golden-yellow), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <div class="filter-tabs">
+        <div class="filter-dropdown">
+            <button class="filter-tab country" onclick="toggleDropdown('country')">Country/City</button>
+            <div class="dropdown-content" id="countryDropdown">
+                <div class="dropdown-option" onclick="filterStories('country', 'United States')">United States</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'China')">China</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'India')">India</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'United Kingdom')">United Kingdom</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'Canada')">Canada</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'Australia')">Australia</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'Germany')">Germany</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'France')">France</div>
+                <div class="dropdown-option" onclick="filterStories('country', 'Japan')">Japan</div>
+                <!-- Add more countries as needed -->
+            </div>
+        </div>
+        <div class="filter-dropdown">
+            <button class="filter-tab industry" onclick="toggleDropdown('industry')">Industry</button>
+            <div class="dropdown-content" id="industryDropdown">
+                <div class="dropdown-option" onclick="filterStories('industry', 'Technology')">Technology</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Finance')">Finance</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Healthcare')">Healthcare</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Education')">Education</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Arts & Entertainment')">Arts & Entertainment</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Non-Profit')">Non-Profit</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Science & Research')">Science & Research</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Law')">Law</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Media & Communications')">Media & Communications</div>
+                <div class="dropdown-option" onclick="filterStories('industry', 'Environmental')">Environmental</div>
+            </div>
+        </div>
+        <div class="filter-dropdown">
+            <button class="filter-tab ethnicity" onclick="toggleDropdown('ethnicity')">Ethnicity</button>
+            <div class="dropdown-content" id="ethnicityDropdown">
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'Asian')">Asian</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'African')">African</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'European')">European</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'Hispanic/Latino')">Hispanic/Latino</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'Middle Eastern')">Middle Eastern</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'Pacific Islander')">Pacific Islander</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'Indigenous')">Indigenous</div>
+                <div class="dropdown-option" onclick="filterStories('ethnicity', 'Mixed Heritage')">Mixed Heritage</div>
+            </div>
+        </div>
+        <button class="filter-tab leader">Group Leader</button>
+        <button class="filter-tab mom">Mom of the Next Generation</button>
+        <button class="filter-tab help">Help Needed</button>
+    </div>
+    
+    <div class="timeline-container">
+        <div class="timeline">
+            <div class="timeline-marker left">
+                <div class="timeline-label">The Present (2025-1950)</div>
+            </div>
+            <div class="timeline-marker middle">
+                <div class="timeline-label">1950-1850</div>
+            </div>
+            <div class="timeline-marker right">
+                <div class="timeline-label">Before 1850</div>
+            </div>
+            <div class="timeline-slider" id="timelineSlider"></div>
+        </div>
+    </div>
+
+    <h1 class="main-title">Her Universe</h1>
+
+    <button class="add-story-button" onclick="openModal()">
+        <span class="upload-text">Upload</span>
+        <span class="description-text">Your Story in Her Universe</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </button>
+
+    <div id="storyModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary-color);">Share Your Story</h2>
+            <form id="storyForm" onsubmit="submitStory(event)">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="e.g., New Jersey, USA" required>
+                </div>
+                <div class="form-group">
+                    <label for="industry">Industry</label>
+                    <select id="industry" required>
+                        <option value="">Select Industry</option>
+                        <option value="technology">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="education">Education</option>
+                        <option value="arts">Arts & Entertainment</option>
+                        <option value="nonprofit">Non-Profit</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ethnicity">Ethnicity</label>
+                    <input type="text" id="ethnicity" required placeholder="Enter your ethnicity">
+                </div>
+                <div class="form-group">
+                    <label for="organization">Organization</label>
+                    <input type="text" id="organization" required placeholder="Enter your organization">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isLeader"> I am a Group Leader/Business Founder
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="helpNeeded">Help Needed (Optional)</label>
+                    <textarea id="helpNeeded" placeholder="Describe any specific help or resources you're looking for..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photo">Profile Photo</label>
+                    <input type="file" id="photo" accept="image/*" onchange="previewImage(event)" required>
+                    <img id="photoPreview" class="profile-preview">
+                </div>
+                <div class="form-group">
+                    <label for="story">Your Story</label>
+                    <textarea id="story" placeholder="Share your journey..." required rows="6"></textarea>
+                </div>
+                <div class="submit-container">
+                    <button type="submit" class="submit-button">SUBMIT</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <a href="index.html" class="nav-arrow">
+        <span class="arrow">→</span>
+        <span class="label">HER RESOURCES</span>
+    </a>
+
+    <a href="admin.html" class="admin-link">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Admin</span>
+    </a>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoid2l0Y2h5aW4iLCJhIjoiY21ibDkxOWhmMTA1ODJpcHdvNG94ZHB5cCJ9.M0K-N1ubPDr22p_I50nWWw';
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v10',
+            center: [-74.5, 40], // Default center (New Jersey)
+            zoom: 2
+        });
+
+        // Add navigation controls
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Store stories data
+        let stories = [];
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('storyModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('storyModal').style.display = 'none';
+        }
+
+        function previewImage(event) {
+            const preview = document.getElementById('photoPreview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function toggleDropdown(type) {
+            const dropdown = document.getElementById(type + 'Dropdown');
+            const allDropdowns = document.querySelectorAll('.dropdown-content');
+            
+            // Close all other dropdowns
+            allDropdowns.forEach(d => {
+                if (d !== dropdown && d.style.display === 'block') {
+                    d.style.display = 'none';
+                }
+            });
+
+            // Toggle current dropdown
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function filterStories(category, value) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            document.querySelector(`.filter-tab.${category}`).classList.add('active');
+            
+            // Filter markers based on category and value
+            stories.forEach(story => {
+                // Here you'll implement the filtering logic based on the story properties
+                console.log(`Filtering by: ${category} - ${value}`);
+            });
+
+            // Close the dropdown
+            document.getElementById(category + 'Dropdown').style.display = 'none';
+        }
+
+        // Modify the submitStory function to include category data
+        async function submitStory(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const location = document.getElementById('location').value;
+            const story = document.getElementById('story').value;
+            const photoFile = document.getElementById('photo').files[0];
+            const industry = document.getElementById('industry').value;
+            const ethnicity = document.getElementById('ethnicity').value;
+            const organization = document.getElementById('organization').value;
+            const isLeader = document.getElementById('isLeader').checked;
+            const helpNeeded = document.getElementById('helpNeeded').value;
+
+            try {
+                // Convert photo to base64
+                const photoBase64 = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(photoFile);
+                });
+
+                // Get coordinates from location using Mapbox Geocoding API
+                const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(location)}.json?access_token=${mapboxgl.accessToken}`);
+                const data = await response.json();
+                
+                if (data.features && data.features.length > 0) {
+                    const coordinates = data.features[0].center;
+                    
+                    // Create new story object with all categories
+                    const newStory = {
+                        name,
+                        location,
+                        coordinates,
+                        story,
+                        photo: photoBase64,
+                        category: {
+                            country: location,
+                            industry,
+                            ethnicity,
+                            organization,
+                            isLeader,
+                            helpNeeded
+                        }
+                    };
+
+                    // Add story to array
+                    stories.push(newStory);
+
+                    // Add marker to map
+                    addStoryMarker(newStory);
+
+                    // Close modal and reset form
+                    closeModal();
+                    document.getElementById('storyForm').reset();
+                    document.getElementById('photoPreview').style.display = 'none';
+
+                    // Show success message
+                    alert('Your story has been successfully added to the map!');
+                }
+            } catch (error) {
+                console.error('Error processing story:', error);
+                alert('Error processing your story. Please try again.');
+            }
+        }
+
+        function addStoryMarker(story) {
+            // Create custom marker element
+            const el = document.createElement('div');
+            el.className = 'marker-avatar';
+            el.style.backgroundImage = `url(${story.photo})`;
+            
+            // Create popup content with category tags
+            const categoryTags = [];
+            if (story.category.industry) categoryTags.push(story.category.industry);
+            if (story.category.ethnicity) categoryTags.push(story.category.ethnicity);
+            if (story.category.organization) categoryTags.push(story.category.organization);
+            if (story.category.isLeader) categoryTags.push('Group Leader');
+            if (story.category.helpNeeded) categoryTags.push('Seeking Help');
+
+            const tagsHTML = categoryTags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+            // Create popup
+            const popup = new mapboxgl.Popup({ offset: 25 })
+                .setHTML(`
+                    <div class="story-popup">
+                        <img src="${story.photo}" alt="${story.name}">
+                        <h3>${story.name}</h3>
+                        <div class="category-tags">
+                            ${tagsHTML}
+                        </div>
+                        <p>${story.story}</p>
+                        <div class="location">${story.location}</div>
+                        ${story.category.helpNeeded ? `
+                            <div style="margin-top: 10px; padding: 10px; background: rgba(128, 0, 128, 0.1); border-radius: 8px;">
+                                <strong>Help Needed:</strong><br>${story.category.helpNeeded}
+                            </div>
+                        ` : ''}
+                    </div>
+                `);
+
+            // Add marker to map
+            new mapboxgl.Marker(el)
+                .setLngLat(story.coordinates)
+                .setPopup(popup)
+                .addTo(map);
+
+            // Add hover effect
+            el.addEventListener('mouseenter', () => {
+                popup.addTo(map);
+            });
+
+            el.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    if (!popup.isOpen()) {
+                        popup.remove();
+                    }
+                }, 300);
+            });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('storyModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        map.on('zoom', () => {
+            // Adjust title opacity based on zoom level
+            const title = document.querySelector('.main-title');
+            const zoom = map.getZoom();
+            if (zoom > 4) {
+                title.style.opacity = '0';
+            } else {
+                title.style.opacity = '0.8';
+            }
+        });
+
+        // Timeline slider functionality
+        const timelineSlider = document.getElementById('timelineSlider');
+        const timeline = document.querySelector('.timeline');
+        let isDragging = false;
+        let currentX;
+        let initialX;
+        let xOffset = 0;
+
+        function setTranslate(xPos, el) {
+            const timelineRect = timeline.getBoundingClientRect();
+            const maxX = timelineRect.width;
+            xPos = Math.max(0, Math.min(xPos, maxX));
+            el.style.left = `${(xPos / maxX) * 100}%`;
+        }
+
+        function dragStart(e) {
+            if (e.type === "mousedown") {
+                initialX = e.clientX - xOffset;
+            } else {
+                initialX = e.touches[0].clientX - xOffset;
+            }
+            
+            if (e.target === timelineSlider) {
+                isDragging = true;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                if (e.type === "mousemove") {
+                    currentX = e.clientX - initialX;
+                } else {
+                    currentX = e.touches[0].clientX - initialX;
+                }
+                
+                xOffset = currentX;
+                setTranslate(currentX, timelineSlider);
+                
+                // Update map markers based on timeline position
+                const timelineRect = timeline.getBoundingClientRect();
+                const position = currentX / timelineRect.width;
+                filterStoriesByTime(position);
+            }
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            isDragging = false;
+        }
+
+        function filterStoriesByTime(position) {
+            // Add your filtering logic here based on the timeline position
+            // position will be between 0 and 1
+            // 0 represents 2025-1950
+            // 0.5 represents 1950-1850
+            // 1 represents before 1850
+        }
+
+        timeline.addEventListener("mousedown", dragStart, false);
+        timeline.addEventListener("mouseup", dragEnd, false);
+        timeline.addEventListener("mousemove", drag, false);
+
+        timeline.addEventListener("touchstart", dragStart, false);
+        timeline.addEventListener("touchend", dragEnd, false);
+        timeline.addEventListener("touchmove", drag, false);
+    </script>
+</body>
+</html> 

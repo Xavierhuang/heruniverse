@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Her Universe - Resource Pyramid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #FFD700;
+            --light-gold: #FFF3B0;
+            --yellow: #FFEB3B;
+            --golden-yellow: #FFC107;
+            --purple: #800080;
+            --light-purple: #E1BEE7;
+            --medium-purple: #9C27B0;
+            --dark-purple: #4A235A;
+            --elegant-purple: #5D4777;
+            --text-color: #2D3436;
+            --emerald: #2ECC71;
+            --navy: #34495E;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, 
+                var(--golden-yellow) 0%,
+                var(--light-gold) 30%,
+                var(--light-purple) 70%,
+                var(--medium-purple) 100%
+            );
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pyramid-container {
+            width: 560px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: -100px;
+            z-index: 1;
+        }
+
+        .decorative-triangle {
+            position: absolute;
+            width: 600px;
+            height: 520px;
+            top: 150px;
+            z-index: 0;
+            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+            background: linear-gradient(180deg, var(--gold), var(--purple));
+            opacity: 0.15;
+            border: 4px dashed;
+            border-image: linear-gradient(180deg, var(--gold), var(--purple)) 1;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                opacity: 0.1;
+            }
+            to {
+                opacity: 0.2;
+            }
+        }
+
+        .pyramid-section {
+            display: block;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.15));
+        }
+
+        .pyramid-section:hover {
+            transform: scale(1.02) translateY(-5px);
+            filter: drop-shadow(0 8px 30px rgba(0,0,0,0.2));
+        }
+
+        #funding {
+            background-image: url('stack1.png');
+            width: 191px;
+            height: 166px;
+            z-index: 4;
+            margin-bottom: 7px;
+        }
+
+        #educational {
+            background-image: url('stack2.png');
+            width: 329px;
+            height: 119px;
+            z-index: 3;
+            margin-bottom: 7px;
+        }
+
+        #crisis {
+            background-image: url('stack3.png');
+            width: 455px;
+            height: 119px;
+            z-index: 2;
+            margin-bottom: 7px;
+        }
+
+        #legal {
+            background-image: url('stack4.png');
+            width: 560px;
+            height: 105px;
+            z-index: 1;
+        }
+
+        .nav-arrow {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 25px 15px;
+            border-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .nav-arrow:hover {
+            transform: translateY(-50%) translateX(5px);
+            box-shadow: 0 6px 25px rgba(128, 0, 128, 0.2);
+            border-color: rgba(128, 0, 128, 0.3);
+            color: var(--accent-color);
+        }
+
+        .nav-arrow .arrow {
+            font-size: 2.2rem;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-arrow .label {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Add decorative elements */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+
+        body::before {
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            bottom: -100px;
+            right: -100px;
+        }
+    </style>
+</head>
+<body>
+    <a href="stories.html" class="nav-arrow">
+        <span class="arrow">←</span>
+        <span class="label">HER STORIES</span>
+    </a>
+
+    <div class="pyramid-container">
+        <div class="decorative-triangle"></div>
+        <a href="funding.html" class="pyramid-section" id="funding"></a>
+        <a href="educational.html" class="pyramid-section" id="educational"></a>
+        <a href="crisis.html" class="pyramid-section" id="crisis"></a>
+        <a href="legal.html" class="pyramid-section" id="legal"></a>
+    </div>
+</body>
+</html> 

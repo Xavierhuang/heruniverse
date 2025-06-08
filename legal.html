@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Support Resources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #ff6b6b;
+            --accent-color: #4ecdc4;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+            --hover-color: #f8f9fa;
+            --gradient-start: #6c63ff;
+            --gradient-end: #ff6b6b;
+            --emergency-color: #ff4757;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .language-selector select {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            border: 2px solid var(--primary-color);
+            background-color: white;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .language-selector select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+        }
+
+        .return-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .return-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .return-button::before {
+            content: '←';
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .return-button:hover::before {
+            transform: translateX(-5px);
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--emergency-color));
+        }
+
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            perspective: 1000px;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(108, 99, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card.emergency {
+            border: 2px solid var(--emergency-color);
+        }
+
+        .card.emergency h3 {
+            color: var(--emergency-color);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(255, 107, 107, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card.emergency:hover {
+            border-color: var(--emergency-color);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .card .contact-info {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: var(--hover-color);
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .card a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .card a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .card a:hover {
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .card a:hover::after {
+            width: 100%;
+        }
+
+        [lang="ar"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.75rem;
+            }
+
+            .card h3 {
+                font-size: 1.1rem;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+
+            .card a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .card {
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: calc(var(--animation-order) * 0.1s);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="return-button">
+        <span>Return to Pyramid</span>
+    </a>
+
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <div id="content">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const content = {
+            en: {
+                section1: {
+                    title: "Global Legal Support Resources for Women",
+                    items: [
+                        {
+                            name: "Refuge (United Kingdom)",
+                            description: "Provides emergency shelter, legal advocacy, and a 24/7 domestic abuse helpline for women and children in the UK.",
+                            link: "https://www.refuge.org.uk"
+                        },
+                        {
+                            name: "Mor Çatı Foundation (Turkey)",
+                            description: "Offers legal counseling, shelters, and psychological support to women and children affected by domestic violence in Turkey.",
+                            link: "https://en.wikipedia.org/wiki/Mor_%C3%87at%C4%B1_Foundation"
+                        },
+                        {
+                            name: "Vanuatu Women's Centre",
+                            description: "Provides legal aid, counseling, and shelter services to women survivors of domestic violence in Vanuatu.",
+                            link: "https://en.wikipedia.org/wiki/Vanuatu_Women%27s_Centre"
+                        },
+                        {
+                            name: "Survivors Foundation (Guatemala)",
+                            description: "Offers legal assistance, shelter, and advocacy for women victims of violence in Guatemala.",
+                            link: "https://en.wikipedia.org/wiki/Survivors_Foundation"
+                        },
+                        {
+                            name: "Women's Center for Legal Aid and Counseling (Palestine)",
+                            description: "Provides legal aid, social counseling, and protection services to women in Palestine.",
+                            link: "https://en.wikipedia.org/wiki/Women%27s_Center_For_Legal_Aid_and_Counseling"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "United States Legal Support Resources",
+                    items: [
+                        {
+                            name: "National Domestic Violence Hotline",
+                            description: "Provides 24/7 support, including legal resources and referrals, for victims of domestic violence.",
+                            contact: "Call: 1-800-799-7233",
+                            link: "https://www.thehotline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "WomensLaw.org",
+                            description: "Offers plain-language legal information and resources for victims of abuse across the U.S.",
+                            link: "https://www.womenslaw.org"
+                        },
+                        {
+                            name: "Her Justice (New York City)",
+                            description: "Provides free legal help to women living in poverty in NYC, focusing on family, matrimonial, and immigration law.",
+                            link: "https://herjustice.org"
+                        },
+                        {
+                            name: "Sanctuary for Families (New York City)",
+                            description: "Offers comprehensive legal services to survivors of gender violence, including representation in family and immigration courts.",
+                            link: "https://sanctuaryforfamilies.org/our-approach/client-services/legal-services/"
+                        },
+                        {
+                            name: "Legal Services NYC",
+                            description: "Provides legal assistance to low-income individuals in NYC, including help with orders of protection and custody cases.",
+                            link: "https://www.legalservicesnyc.org/resources/domestic-violence-family-law/"
+                        },
+                        {
+                            name: "Legal Aid Foundation of Los Angeles (LAFLA)",
+                            description: "Offers legal services to survivors of domestic violence, including assistance with restraining orders and family law matters.",
+                            link: "https://lafla.org/get-help/domestic-violence-family-law/"
+                        }
+                    ]
+                },
+                section3: {
+                    title: "China Legal Support Resources",
+                    items: [
+                        {
+                            name: "All-China Women's Federation (ACWF)",
+                            description: "Provides legal consultation and assistance through women's rights hotlines across China to help women protect their legal rights.",
+                            link: "http://www.women.org.cn"
+                        },
+                        {
+                            name: "Equality Beijing Hotline",
+                            description: "Provides legal consultation and support services for victims of domestic violence.",
+                            contact: "Call: 1511 7905 157",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "Red Maple Hotline",
+                            description: "Offers legal support and consultation services related to women's rights and domestic violence.",
+                            contact: "Call: 010 6833 3388",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "China's Anti-Domestic Violence Law",
+                            description: "The Anti-Domestic Violence Law of 2015 provides legal protection for victims of domestic violence, including personal safety protection orders.",
+                            link: "https://www.chinalawtranslate.com/en/Domestic-Violence-Law-2015/"
+                        }
+                    ]
+                }
+            },
+            zh: {
+                section1: {
+                    title: "全球女性法律支持资源",
+                    items: [
+                        {
+                            name: "Refuge（英国）",
+                            description: "为英国的女性和儿童提供紧急庇护、法律倡导和全天候的家庭暴力求助热线服务。",
+                            link: "https://www.refuge.org.uk"
+                        },
+                        {
+                            name: "Mor Çatı基金会（土耳其）",
+                            description: "为土耳其遭受家庭暴力的女性和儿童提供法律咨询、庇护所和心理支持。",
+                            link: "https://en.wikipedia.org/wiki/Mor_%C3%87at%C4%B1_Foundation"
+                        },
+                        {
+                            name: "瓦努阿图妇女中心",
+                            description: "为瓦努阿图的家庭暴力幸存女性提供法律援助、咨询和庇护服务。",
+                            link: "https://en.wikipedia.org/wiki/Vanuatu_Women%27s_Centre"
+                        },
+                        {
+                            name: "幸存者基金会（危地马拉）",
+                            description: "为危地马拉的暴力受害女性提供法律援助、庇护和倡导服务。",
+                            link: "https://en.wikipedia.org/wiki/Survivors_Foundation"
+                        },
+                        {
+                            name: "法律援助和咨询妇女中心（巴勒斯坦）",
+                            description: "为巴勒斯坦女性提供法律援助、社会咨询和保护服务。",
+                            link: "https://en.wikipedia.org/wiki/Women%27s_Center_For_Legal_Aid_and_Counseling"
+                        }
+                    ]
+                },
+                section2: {
+                    title: "美国女性法律支持资源",
+                    items: [
+                        {
+                            name: "全国家庭暴力热线",
+                            description: "提供全天候支持，包括法律资源和转介服务，帮助家庭暴力受害者。",
+                            contact: "电话：1-800-799-7233",
+                            link: "https://www.thehotline.org",
+                            isEmergency: true
+                        },
+                        {
+                            name: "WomensLaw.org",
+                            description: "为全美的虐待受害者提供通俗易懂的法律信息和资源。",
+                            link: "https://www.womenslaw.org"
+                        },
+                        {
+                            name: "Her Justice（纽约市）",
+                            description: "为纽约市生活贫困的女性提供免费的法律帮助，重点关注家庭、婚姻和移民法。",
+                            link: "https://herjustice.org"
+                        },
+                        {
+                            name: "庇护家庭组织（纽约市）",
+                            description: "为性别暴力幸存者提供全面的法律服务，包括家庭和移民法院的代理。",
+                            link: "https://sanctuaryforfamilies.org/our-approach/client-services/legal-services/"
+                        },
+                        {
+                            name: "纽约市法律服务",
+                            description: "为纽约市低收入个人提供法律援助，包括保护令和监护案件的帮助。",
+                            link: "https://www.legalservicesnyc.org/resources/domestic-violence-family-law/"
+                        },
+                        {
+                            name: "洛杉矶法律援助基金会（LAFLA）",
+                            description: "为家庭暴力幸存者提供法律服务，包括限制令和家庭法事务的协助。",
+                            link: "https://lafla.org/get-help/domestic-violence-family-law/"
+                        }
+                    ]
+                },
+                section3: {
+                    title: "中国女性法律支持资源",
+                    items: [
+                        {
+                            name: "全国妇联",
+                            description: "全国妇联在各地设有妇女维权热线，提供法律咨询和援助，帮助女性维护合法权益。",
+                            link: "http://www.women.org.cn"
+                        },
+                        {
+                            name: "北京平等热线",
+                            description: "为家庭暴力受害者提供法律咨询和支持服务。",
+                            contact: "电话：1511 7905 157",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "红枫热线",
+                            description: "提供女性权益和家庭暴力相关的法律支持和咨询服务。",
+                            contact: "电话：010 6833 3388",
+                            link: "https://nomoredirectory.org/china/",
+                            isEmergency: true
+                        },
+                        {
+                            name: "中国反家庭暴力法",
+                            description: "2015年颁布的《中华人民共和国反家庭暴力法》为家庭暴力受害者提供了法律保护，包括人身安全保护令等措施。",
+                            link: "https://www.chinalawtranslate.com/en/Domestic-Violence-Law-2015/"
+                        }
+                    ]
+                }
+            }
+        };
+
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            renderContent(lang);
+        }
+
+        function renderContent(lang) {
+            const contentDiv = document.getElementById('content');
+            const langContent = content[lang] || content.en;
+            
+            contentDiv.innerHTML = Object.keys(langContent).map((sectionKey, sectionIndex) => {
+                const section = langContent[sectionKey];
+                return `
+                    <div class="section">
+                        <h2>${section.title}</h2>
+                        <div class="cards-container">
+                            ${section.items.map((item, itemIndex) => `
+                                <div class="card${item.isEmergency ? ' emergency' : ''}" style="--animation-order: ${sectionIndex * 6 + itemIndex + 1}">
+                                    <h3>${item.name}</h3>
+                                    <p>${item.description}</p>
+                                    ${item.contact ? `<div class="contact-info">${item.contact}</div>` : ''}
+                                    <a href="${item.link}" target="_blank">
+                                        ${lang === 'zh' ? '了解更多 →' : 'Learn More →'}
+                                    </a>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add intersection observer for animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            // Observe all cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                observer.observe(card);
+            });
+        }
+
+        // Load preferred language or default to English
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        document.getElementById('languageSelect').value = preferredLanguage;
+        document.documentElement.lang = preferredLanguage;
+        renderContent(preferredLanguage);
+
+        // Add smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html> 
