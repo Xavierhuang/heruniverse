@@ -45,8 +45,59 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: -100px;
+            justify-content: center;
+        }
+
+        .pyramid-section {
+            display: block;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            margin: 0 auto;
+        }
+
+        .pyramid-section:hover {
+            transform: scale(1.02);
+        }
+
+        .pyramid-section img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            max-width: 100%;
+        }
+
+        #funding {
+            width: 197px;
+            height: 160px;
+            z-index: 4;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        #educational {
+            width: 329px;
+            height: 119px;
+            z-index: 3;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        #crisis {
+            width: 455px;
+            height: 119px;
+            z-index: 2;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        #legal {
+            width: 560px;
+            height: 105px;
             z-index: 1;
+            position: relative;
         }
 
         .decorative-triangle {
@@ -54,69 +105,14 @@
             width: 600px;
             height: 520px;
             top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 0;
-            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
             background: linear-gradient(180deg, var(--gold), var(--purple));
             opacity: 0.15;
             border: 4px dashed;
             border-image: linear-gradient(180deg, var(--gold), var(--purple)) 1;
-            animation: glow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                opacity: 0.1;
-            }
-            to {
-                opacity: 0.2;
-            }
-        }
-
-        .pyramid-section {
-            display: block;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.15));
-        }
-
-        .pyramid-section:hover {
-            transform: scale(1.02) translateY(-5px);
-            filter: drop-shadow(0 8px 30px rgba(0,0,0,0.2));
-        }
-
-        #funding {
-            background-image: url('stack1.png');
-            width: 191px;
-            height: 166px;
-            z-index: 4;
-            margin-bottom: 7px;
-        }
-
-        #educational {
-            background-image: url('stack2.png');
-            width: 329px;
-            height: 119px;
-            z-index: 3;
-            margin-bottom: 7px;
-        }
-
-        #crisis {
-            background-image: url('stack3.png');
-            width: 455px;
-            height: 119px;
-            z-index: 2;
-            margin-bottom: 7px;
-        }
-
-        #legal {
-            background-image: url('stack4.png');
-            width: 560px;
-            height: 105px;
-            z-index: 1;
         }
 
         .nav-arrow {
@@ -132,7 +128,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             text-decoration: none;
             color: var(--primary-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -143,8 +139,6 @@
         .nav-arrow:hover {
             transform: translateY(-50%) translateX(5px);
             box-shadow: 0 6px 25px rgba(128, 0, 128, 0.2);
-            border-color: rgba(128, 0, 128, 0.3);
-            color: var(--accent-color);
         }
 
         .nav-arrow .arrow {
@@ -198,10 +192,18 @@
 
     <div class="pyramid-container">
         <div class="decorative-triangle"></div>
-        <a href="funding.html" class="pyramid-section" id="funding"></a>
-        <a href="educational.html" class="pyramid-section" id="educational"></a>
-        <a href="crisis.html" class="pyramid-section" id="crisis"></a>
-        <a href="legal.html" class="pyramid-section" id="legal"></a>
+        <a href="funding.html" class="pyramid-section" id="funding">
+            <img src="/stack1.png" alt="Funding Section">
+        </a>
+        <a href="educational.html" class="pyramid-section" id="educational">
+            <img src="/stack2.png" alt="Educational Resources Section">
+        </a>
+        <a href="crisis.html" class="pyramid-section" id="crisis">
+            <img src="/stack3.png" alt="Crisis Support Section">
+        </a>
+        <a href="legal.html" class="pyramid-section" id="legal">
+            <img src="/stack4.png" alt="Legal Support Section">
+        </a>
     </div>
 </body>
 </html> 
